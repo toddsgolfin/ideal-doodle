@@ -1,13 +1,13 @@
 ## debian-update.yml ##
 
-- name: Perform update on all Ubuntu servers
+- name: Perform update on all Debian servers
   hosts: debian
   gather_facts: yes
   become: yes
 
   tasks:
   - name: Perform a dist-upgrade.
-    ansible.builtin.apt:
+    apt:
       update_cache: yes
       upgrade: yes
 
