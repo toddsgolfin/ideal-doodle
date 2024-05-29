@@ -1,4 +1,4 @@
-## ubuntu-apt-check.yml ##
+## ubuntu-update.yml ##
 
 - name: Perform update on all Ubuntu servers
   hosts: ubuntu
