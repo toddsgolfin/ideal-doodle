@@ -1,6 +1,6 @@
 ---
 - name: OS update
-  hosts: debian
+  hosts: ubuntu
   gather_facts: yes
   become: yes
 
