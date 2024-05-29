@@ -6,38 +6,21 @@
   become: yes
 
   tasks:
-    - name: Perform a dist-upgrade.
-      ansible.builtin.apt:
-        upgrade: dist
-        update_cache: yes
+  - name: Perform a dist-upgrade.
+    ansible.builtin.apt:
+      upgrade: dist
+      update_cache: yes
 
-    # - name: "*****  Performing apt update_cache  *****"
-    #   apt:
-    #     update_cache: yes
-    #     cache_valid_time: 3600
-    #     upgrade: dist
-    #   register: updates_required
+  - name: Check if a reboot is required.
+    ansible.builtin.stat:
+      path: /var/run/reboot-required
+      get_checksum: no
+    register: reboot_required_file
 
-    # - name: "*****  Performing apt list --upgradable  *****"
-    #   shell: apt list --upgradable
-    #   register: available_updates
-    #   when: updates_required.changed
+  - name: Reboot the server (if required).
+    ansible.builtin.reboot:
+    when: reboot_required_file.stat.exists == true
 
-    # - name: "!!!======  List of available updates for this server  =====!!!"
-    #   debug:
-    #     var: available_updates.stdout_lines
-    #   when: updates_required.changed
-
-    - name: Check if a reboot is required.
-      ansible.builtin.stat:
-        path: /var/run/reboot-required
-        get_checksum: no
-      register: reboot_required_file
-
-    # - name: Reboot the server (if required).
-    #   ansible.builtin.reboot:
-    #   when: reboot_required_file.stat.exists == true
-
-    - name: Remove dependencies that are no longer required.
-      ansible.builtin.apt:
-        autoremove: yes
+  - name: Remove dependencies that are no longer required.
+    ansible.builtin.apt:
+      autoremove: yes
