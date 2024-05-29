@@ -1,6 +1,6 @@
 ---
 - name: Playbook to Update cache, upgrade packages and reboot os if necessary
-  hosts: all
+  hosts: debian
   become: yes
   gather_facts: False
   tasks:
