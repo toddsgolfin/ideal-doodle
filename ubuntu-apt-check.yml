@@ -23,11 +23,13 @@
       var: available_updates.stdout_lines
     when: updates_required.changed
 
-  - name: Check if reboot required
-    stat:
-      path: /var/run/reboot-required
-    register: reboot_required_file
-
-  - name: "!!!======  REBOOT REQUIRED FOR THIS SERVER  =====!!!"
-    debug:
-      var: reboot_required_file.stdout_lines
+  - name: Check if restart is required
+    hosts: all
+    tasks:
+      - name: Check that the reboot-requied exists
+        stat:
+          path: /var/run/reboot-required
+        register: p
+      - debug:
+          msg: "Reboot required"
+        when: p.stat.exists
