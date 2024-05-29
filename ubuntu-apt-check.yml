@@ -1,0 +1,33 @@
+## ubuntu-apt-check.yml ##
+
+- name: "*****  Review all Ubuntu servers and determine if updates are needed  *****"
+  hosts: ubuntu
+  gather_facts: yes
+  become: yes
+
+  tasks:
+  - name: "*****  Performing apt update_cache  *****"
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+      upgrade: dist
+    register: updates_required
+
+  - name: "*****  Performing apt list --upgradable  *****"
+    shell: apt list --upgradable
+    register: available_updates
+    when: updates_required.changed
+
+  - name: "!!!======  List of available updates for this server  =====!!!"
+    debug:
+      var: available_updates.stdout_lines
+    when: updates_required.changed
+
+  - name: Check if reboot required
+    stat:
+      path: /var/run/reboot-required
+    register: reboot_required_file
+
+  - name: "!!!======  REBOOT REQUIRED FOR THIS SERVER  =====!!!"
+    debug:
+      var: reboot_required_file.stdout_lines
