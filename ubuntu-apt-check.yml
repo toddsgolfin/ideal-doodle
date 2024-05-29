@@ -6,30 +6,27 @@
   become: yes
 
   tasks:
-  - name: "*****  Performing apt update_cache  *****"
-    apt:
-      update_cache: yes
-      cache_valid_time: 3600
-      upgrade: dist
-    register: updates_required
+    - name: "*****  Performing apt update_cache  *****"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        upgrade: dist
+      register: updates_required
 
-  - name: "*****  Performing apt list --upgradable  *****"
-    shell: apt list --upgradable
-    register: available_updates
-    when: updates_required.changed
+    - name: "*****  Performing apt list --upgradable  *****"
+      shell: apt list --upgradable
+      register: available_updates
+      when: updates_required.changed
 
-  - name: "!!!======  List of available updates for this server  =====!!!"
-    debug:
-      var: available_updates.stdout_lines
-    when: updates_required.changed
+    - name: "!!!======  List of available updates for this server  =====!!!"
+      debug:
+        var: available_updates.stdout_lines
+      when: updates_required.changed
 
-  - name: Check if restart is required
-    hosts: all
-    tasks:
-      - name: Check that the reboot-requied exists
-        stat:
-          path: /var/run/reboot-required
-        register: p
-      - debug:
-          msg: "Reboot required"
-        when: p.stat.exists
+    - name: "*****  Check if restart is required  *****"
+      stat:
+        path: /var/run/reboot-required
+      register: p
+    - debug:
+        msg: "!!!======  REBOOT REQUIRED  =====!!!"
+      when: p.stat.exists
