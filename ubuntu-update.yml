@@ -1,7 +1,7 @@
 ## ubuntu-apt-check.yml ##
 
 - name: Perform update on all Ubuntu servers
-  hosts: ubuntu
+  hosts: ubuntu debian
   gather_facts: yes
   become: yes
 
