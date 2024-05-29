@@ -6,22 +6,27 @@
   become: yes
 
   tasks:
-    - name: "*****  Performing apt update_cache  *****"
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
+    - name: Perform a dist-upgrade.
+      ansible.builtin.apt:
         upgrade: dist
-      register: updates_required
+        update_cache: yes
 
-    - name: "*****  Performing apt list --upgradable  *****"
-      shell: apt list --upgradable
-      register: available_updates
-      when: updates_required.changed
+    # - name: "*****  Performing apt update_cache  *****"
+    #   apt:
+    #     update_cache: yes
+    #     cache_valid_time: 3600
+    #     upgrade: dist
+    #   register: updates_required
 
-    - name: "!!!======  List of available updates for this server  =====!!!"
-      debug:
-        var: available_updates.stdout_lines
-      when: updates_required.changed
+    # - name: "*****  Performing apt list --upgradable  *****"
+    #   shell: apt list --upgradable
+    #   register: available_updates
+    #   when: updates_required.changed
+
+    # - name: "!!!======  List of available updates for this server  =====!!!"
+    #   debug:
+    #     var: available_updates.stdout_lines
+    #   when: updates_required.changed
 
     - name: Check if a reboot is required.
       ansible.builtin.stat:
